@@ -6,9 +6,11 @@ import { Route, Routes } from "react-router-dom";
 
 const AppRoutes = () => {
   return (
-    <Routes element={<AppLayout />}>
-      <Route index element={<Dashboard />} />
-      <Route path="learning" element={<Learning />} />
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="learning" element={<Learning />} />
+      </Route>
     </Routes>
   );
 };
