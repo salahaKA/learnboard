@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Table, Tag } from "antd";
 import FilterPanel from "@/components/common/FilterPanel";
+import DataTable from "@/components/common/DataTable";
 import { useLearningStore } from "@/store/useLearningStore";
 import { filterItems } from "@/features/learning/filterItems";
+import { getLearningColumns } from "@/features/learning/columns";
 import { STATUS, PRIORITY, CATEGORIES } from "@/constants/learning";
 import { toOptions } from "@/utils/options";
 
@@ -41,34 +42,7 @@ export default function Learning() {
   }, [fetchItems]);
 
   const data = useMemo(() => filterItems(items, filters), [items, filters]);
-
-  const columns = [
-    {
-      title: "Title",
-      dataIndex: "title",
-      sorter: (a, b) => a.title.localeCompare(b.title),
-    },
-    { title: "Category", dataIndex: "category" },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (status) => (
-        <Tag color={STATUS[status].color}>{STATUS[status].label}</Tag>
-      ),
-    },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      render: (priority) => (
-        <Tag color={PRIORITY[priority].color}>{PRIORITY[priority].label}</Tag>
-      ),
-    },
-    {
-      title: "Due date",
-      dataIndex: "dueDate",
-      sorter: (a, b) => a.dueDate.localeCompare(b.dueDate),
-    },
-  ];
+  const columns = useMemo(() => getLearningColumns(), []);
 
   return (
     <div>
@@ -78,17 +52,11 @@ export default function Learning() {
 
       <FilterPanel
         fields={FILTER_FIELDS}
-        onApply={(values) => setFilters(values)}
+        onApply={setFilters}
         onClear={() => setFilters({})}
       />
 
-      <Table
-        rowKey="id"
-        columns={columns}
-        dataSource={data}
-        loading={loading}
-        pagination={{ pageSize: 5 }}
-      />
+      <DataTable columns={columns} data={data} loading={loading} />
     </div>
   );
 }
